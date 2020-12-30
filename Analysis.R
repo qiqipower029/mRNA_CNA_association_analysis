@@ -7,19 +7,19 @@ library(ggpubr)
 #---------------------HNSC dataset---------------------------#
 # Tidy data for HNSC
 CNA_HNSC = read.delim("./Downloaded Data/CNA HNSC.txt")
-mRNA_HNSC = read.delim("./Downloaded Data/mRNA expression z-scores HNSC.txt")
+mRNA_HNSC = read.delim("./Downloaded Data/mRNA Expression HNSCC.txt")
 HNSC = cbind.data.frame(CNA_HNSC, mRNA_HNSC) 
 HNSC = HNSC[-c(5,6)]
 
 #-------FAT1 analysis in HNSC---------#
 FAT1_HNSC = HNSC[c(1, 2, 3, 5)] 
 colnames(FAT1_HNSC) = c("Study ID", "Sample ID", "Copy Number Alterations", "mRNA Expression")  
-
+FAT1_HNSC$`mRNA Expression` = log(FAT1_HNSC$`mRNA Expression`, base = 2)
 # Making linear regression plot
-P1 = 
+P1.2 = 
 FAT1_HNSC %>% 
-  ggplot(aes(x = `Copy Number Alterations`, y = `mRNA Expression`)) + geom_point(alpha = 0.3) + geom_smooth(method = "lm") + theme_bw() + 
-  labs(caption = "FAT1 in HNSCC")
+  ggplot(aes(x = `Copy Number Alterations`, y = `mRNA Expression`))  + geom_boxplot() + theme_bw() + 
+  labs(caption = "FAT1 in HNSCC", y = "log2 (mRNA Expression)")
 
 # Pearson Correlation
 cor.test(FAT1_HNSC$`Copy Number Alterations`, FAT1_HNSC$`mRNA Expression`, method="pearson")
@@ -31,7 +31,7 @@ cor.test(FAT1_HNSC$`Copy Number Alterations`, FAT1_HNSC$`mRNA Expression`, metho
 cor.test(FAT1_HNSC$`Copy Number Alterations`, FAT1_HNSC$`mRNA Expression`, method="kendall")
 
 # Anova analysis
-FAT1_HNSC$`Copy Number Alterations` = as.character(FAT1_HNSC$`Copy Number Alterations`)
+FAT1_HNSC$`Copy Number Alterations` = as.factor(FAT1_HNSC$`Copy Number Alterations`)
 analysis1 = aov(FAT1_HNSC$`mRNA Expression`~FAT1_HNSC$`Copy Number Alterations`)
 summary.aov(analysis1)
 

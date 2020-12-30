@@ -1,0 +1,58 @@
+---
+title: "Analysis"
+author: "Jieqi Tu"
+date: "12/30/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggpubr)
+```
+
+# HNSCC
+```{r}
+CNA_HNSC = read.delim("./Downloaded Data/CNA HNSC.txt")
+mRNA_HNSC = read.delim("./Downloaded Data/mRNA Expression HNSCC.txt")
+HNSC = cbind.data.frame(CNA_HNSC, mRNA_HNSC) 
+HNSC = HNSC[-c(5,6)]
+```
+
+```{r}
+FAT1_HNSC = HNSC[c(1, 2, 3, 5)] 
+colnames(FAT1_HNSC) = c("Study ID", "Sample ID", "Copy Number Alterations", "mRNA Expression")  
+
+
+P1.1 = 
+FAT1_HNSC %>% 
+  ggplot(aes(x = `Copy Number Alterations`, y = `mRNA Expression`))  + geom_boxplot() + theme_bw() + 
+  labs(caption = "FAT1 in HNSCC")
+
+FAT1_HNSC$`mRNA Expression` = log(FAT1_HNSC$`mRNA Expression`, base = 2)
+# Making linear regression plot
+P1.2 = 
+FAT1_HNSC %>% 
+  ggplot(aes(x = `Copy Number Alterations`, y = `mRNA Expression`))  + geom_boxplot() + theme_bw() + 
+  labs(caption = "FAT1 in HNSCC", y = "log2 (mRNA Expression)")
+
+# Anova analysis
+FAT1_HNSC$`Copy Number Alterations` = as.factor(FAT1_HNSC$`Copy Number Alterations`)
+analysis1 = aov(FAT1_HNSC$`mRNA Expression`~FAT1_HNSC$`Copy Number Alterations`)
+summary.aov(analysis1)
+
+# Pearson Correlation
+cor.test(FAT1_HNSC$`Copy Number Alterations`, FAT1_HNSC$`mRNA Expression`, method="pearson")
+
+# Spearman Correlation
+cor.test(FAT1_HNSC$`Copy Number Alterations`, FAT1_HNSC$`mRNA Expression`, method="spearman")
+
+# Kendall Correlation
+cor.test(FAT1_HNSC$`Copy Number Alterations`, FAT1_HNSC$`mRNA Expression`, method="kendall")
+
+# Anova analysis
+FAT1_HNSC$`Copy Number Alterations` = as.factor(FAT1_HNSC$`Copy Number Alterations`)
+analysis1 = aov(FAT1_HNSC$`mRNA Expression`~FAT1_HNSC$`Copy Number Alterations`)
+summary.aov(analysis1)
+
+```
+
