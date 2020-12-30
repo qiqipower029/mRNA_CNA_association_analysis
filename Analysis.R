@@ -14,7 +14,7 @@ HNSC = HNSC[-c(5,6)]
 #-------FAT1 analysis in HNSC---------#
 FAT1_HNSC = HNSC[c(1, 2, 3, 5)] 
 colnames(FAT1_HNSC) = c("Study ID", "Sample ID", "Copy Number Alterations", "mRNA Expression")  
-FAT1_HNSC$`mRNA Expression` = log(FAT1_HNSC$`mRNA Expression`, base = 2)
+FAT1_HNSC$`log2 (mRNA Expression)` = log(FAT1_HNSC$`mRNA Expression`, base = 2)
 # Making linear regression plot
 P1.2 = 
 FAT1_HNSC %>% 

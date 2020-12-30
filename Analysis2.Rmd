@@ -3,6 +3,8 @@ title: "Analysis"
 author: "Jieqi Tu"
 date: "12/30/2020"
 output: pdf_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -10,49 +12,215 @@ library(tidyverse)
 library(ggpubr)
 ```
 
-# HNSCC
 ```{r}
 CNA_HNSC = read.delim("./Downloaded Data/CNA HNSC.txt")
 mRNA_HNSC = read.delim("./Downloaded Data/mRNA Expression HNSCC.txt")
 HNSC = cbind.data.frame(CNA_HNSC, mRNA_HNSC) 
 HNSC = HNSC[-c(5,6)]
+CNA_LSCC = read.delim("./Downloaded Data/CNA LSCC.txt")
+mRNA_LSCC = read.delim("./Downloaded Data/mRNA Expression LSCC.txt")
+LSCC = cbind.data.frame(CNA_LSCC, mRNA_LSCC) 
+LSCC = LSCC[-c(5,6)]
+CNA_CSCC = read.delim("./Downloaded Data/CNA CSCC.txt")
+mRNA_CSCC = read.delim("./Downloaded Data/mRNA expression CSCC.txt")
+CSCC = cbind.data.frame(CNA_CSCC, mRNA_CSCC) 
+CSCC = CSCC[-c(5,6)]
+
 ```
 
 ```{r}
 FAT1_HNSC = HNSC[c(1, 2, 3, 5)] 
 colnames(FAT1_HNSC) = c("Study ID", "Sample ID", "Copy Number Alterations", "mRNA Expression")  
+FAT1_HNSC$`log2 (mRNA Expression)` = log(FAT1_HNSC$`mRNA Expression`, base = 2)
+# Pearson Correlation
+cor.test(FAT1_HNSC$`Copy Number Alterations`, FAT1_HNSC$`log2 (mRNA Expression)`, method="pearson")
 
+# Spearman Correlation
+cor.test(FAT1_HNSC$`Copy Number Alterations`, FAT1_HNSC$`log2 (mRNA Expression)`, method="spearman")
+
+# Kendall Correlation
+cor.test(FAT1_HNSC$`Copy Number Alterations`, FAT1_HNSC$`log2 (mRNA Expression)`, method="kendall")
+
+FAT1_HNSC$`Copy Number Alterations` = as.factor(FAT1_HNSC$`Copy Number Alterations`)
+summary(FAT1_HNSC[4:5]) %>% knitr::kable()
 
 P1.1 = 
 FAT1_HNSC %>% 
   ggplot(aes(x = `Copy Number Alterations`, y = `mRNA Expression`))  + geom_boxplot() + theme_bw() + 
   labs(caption = "FAT1 in HNSCC")
 
-FAT1_HNSC$`mRNA Expression` = log(FAT1_HNSC$`mRNA Expression`, base = 2)
-# Making linear regression plot
 P1.2 = 
 FAT1_HNSC %>% 
-  ggplot(aes(x = `Copy Number Alterations`, y = `mRNA Expression`))  + geom_boxplot() + theme_bw() + 
-  labs(caption = "FAT1 in HNSCC", y = "log2 (mRNA Expression)")
+  ggplot(aes(x = `Copy Number Alterations`, y = `log2 (mRNA Expression)`))  + geom_boxplot() + theme_bw() + 
+  labs(caption = "FAT1 in HNSCC")
 
 # Anova analysis
-FAT1_HNSC$`Copy Number Alterations` = as.factor(FAT1_HNSC$`Copy Number Alterations`)
-analysis1 = aov(FAT1_HNSC$`mRNA Expression`~FAT1_HNSC$`Copy Number Alterations`)
+analysis1 = aov(FAT1_HNSC$`log2 (mRNA Expression)`~FAT1_HNSC$`Copy Number Alterations`)
 summary.aov(analysis1)
-
-# Pearson Correlation
-cor.test(FAT1_HNSC$`Copy Number Alterations`, FAT1_HNSC$`mRNA Expression`, method="pearson")
-
-# Spearman Correlation
-cor.test(FAT1_HNSC$`Copy Number Alterations`, FAT1_HNSC$`mRNA Expression`, method="spearman")
-
-# Kendall Correlation
-cor.test(FAT1_HNSC$`Copy Number Alterations`, FAT1_HNSC$`mRNA Expression`, method="kendall")
-
-# Anova analysis
-FAT1_HNSC$`Copy Number Alterations` = as.factor(FAT1_HNSC$`Copy Number Alterations`)
-analysis1 = aov(FAT1_HNSC$`mRNA Expression`~FAT1_HNSC$`Copy Number Alterations`)
-summary.aov(analysis1)
-
 ```
 
+```{r}
+EGFR_HNSC = HNSC[c(1, 2, 4, 6)] 
+colnames(EGFR_HNSC) = c("Study ID", "Sample ID", "Copy Number Alterations", "mRNA Expression")  
+EGFR_HNSC$`log2 (mRNA Expression)` = log(EGFR_HNSC$`mRNA Expression`, base = 2)
+# Pearson Correlation
+cor.test(EGFR_HNSC$`Copy Number Alterations`, EGFR_HNSC$`log2 (mRNA Expression)`, method="pearson")
+
+# Spearman Correlation
+cor.test(EGFR_HNSC$`Copy Number Alterations`, EGFR_HNSC$`log2 (mRNA Expression)`, method="spearman")
+
+# Kendall Correlation
+cor.test(EGFR_HNSC$`Copy Number Alterations`, EGFR_HNSC$`log2 (mRNA Expression)`, method="kendall")
+
+EGFR_HNSC$`Copy Number Alterations` = as.factor(EGFR_HNSC$`Copy Number Alterations`)
+summary(EGFR_HNSC[4:5]) %>% knitr::kable()
+
+P2.1 = 
+EGFR_HNSC %>% 
+  ggplot(aes(x = `Copy Number Alterations`, y = `mRNA Expression`))  + geom_boxplot() + theme_bw() + 
+  labs(caption = "EGFR in HNSCC")
+
+P2.2 = 
+EGFR_HNSC %>% 
+  ggplot(aes(x = `Copy Number Alterations`, y = `log2 (mRNA Expression)`))  + geom_boxplot() + theme_bw() + 
+  labs(caption = "EGFR in HNSCC")
+
+# Anova analysis
+analysis2 = aov(EGFR_HNSC$`log2 (mRNA Expression)`~EGFR_HNSC$`Copy Number Alterations`)
+summary.aov(analysis2)
+```
+
+```{r}
+FAT1_LSCC = LSCC[c(1, 2, 3, 5)] 
+colnames(FAT1_LSCC) = c("Study ID", "Sample ID", "Copy Number Alterations", "mRNA Expression")  
+FAT1_LSCC$`log2 (mRNA Expression)` = log(FAT1_LSCC$`mRNA Expression`, base = 2)
+# Pearson Correlation
+cor.test(FAT1_LSCC$`Copy Number Alterations`, FAT1_LSCC$`log2 (mRNA Expression)`, method="pearson")
+
+# Spearman Correlation
+cor.test(FAT1_LSCC$`Copy Number Alterations`, FAT1_LSCC$`log2 (mRNA Expression)`, method="spearman")
+
+# Kendall Correlation
+cor.test(FAT1_LSCC$`Copy Number Alterations`, FAT1_LSCC$`log2 (mRNA Expression)`, method="kendall")
+
+FAT1_LSCC$`Copy Number Alterations` = as.factor(FAT1_LSCC$`Copy Number Alterations`)
+summary(FAT1_LSCC[4:5]) %>% knitr::kable()
+
+P3.1 = 
+FAT1_LSCC %>% 
+  ggplot(aes(x = `Copy Number Alterations`, y = `mRNA Expression`))  + geom_boxplot() + theme_bw() + 
+  labs(caption = "FAT1 in Lung SCC")
+
+P3.2 = 
+FAT1_LSCC %>% 
+  ggplot(aes(x = `Copy Number Alterations`, y = `log2 (mRNA Expression)`))  + geom_boxplot() + theme_bw() + 
+  labs(caption = "FAT1 in Lung SCC")
+
+# Anova analysis
+analysis3 = aov(FAT1_LSCC$`log2 (mRNA Expression)`~FAT1_LSCC$`Copy Number Alterations`)
+summary.aov(analysis3)
+```
+
+```{r}
+EGFR_LSCC = LSCC[c(1, 2, 4, 6)] 
+colnames(EGFR_LSCC) = c("Study ID", "Sample ID", "Copy Number Alterations", "mRNA Expression")  
+EGFR_LSCC$`log2 (mRNA Expression)` = log(EGFR_LSCC$`mRNA Expression`, base = 2)
+# Pearson Correlation
+cor.test(EGFR_LSCC$`Copy Number Alterations`, EGFR_LSCC$`log2 (mRNA Expression)`, method="pearson")
+
+# Spearman Correlation
+cor.test(EGFR_LSCC$`Copy Number Alterations`, EGFR_LSCC$`log2 (mRNA Expression)`, method="spearman")
+
+# Kendall Correlation
+cor.test(EGFR_LSCC$`Copy Number Alterations`, EGFR_LSCC$`log2 (mRNA Expression)`, method="kendall")
+
+EGFR_LSCC$`Copy Number Alterations` = as.factor(EGFR_LSCC$`Copy Number Alterations`)
+summary(EGFR_LSCC[4:5]) %>% knitr::kable()
+
+P4.1 = 
+EGFR_LSCC %>% 
+  ggplot(aes(x = `Copy Number Alterations`, y = `mRNA Expression`))  + geom_boxplot() + theme_bw() + 
+  labs(caption = "EGFR in Lung SCC")
+
+P4.2 = 
+EGFR_LSCC %>% 
+  ggplot(aes(x = `Copy Number Alterations`, y = `log2 (mRNA Expression)`))  + geom_boxplot() + theme_bw() + 
+  labs(caption = "EGFR in Lung HNSCC")
+
+# Anova analysis
+analysis4 = aov(EGFR_LSCC$`log2 (mRNA Expression)`~EGFR_LSCC$`Copy Number Alterations`)
+summary.aov(analysis4)
+```
+
+```{r}
+FAT1_CSCC = CSCC[c(1, 2, 3, 5)] 
+colnames(FAT1_CSCC) = c("Study ID", "Sample ID", "Copy Number Alterations", "mRNA Expression")  
+FAT1_CSCC$`log2 (mRNA Expression)` = log(FAT1_CSCC$`mRNA Expression`, base = 2)
+# Pearson Correlation
+cor.test(FAT1_CSCC$`Copy Number Alterations`, FAT1_CSCC$`log2 (mRNA Expression)`, method="pearson")
+
+# Spearman Correlation
+cor.test(FAT1_CSCC$`Copy Number Alterations`, FAT1_CSCC$`log2 (mRNA Expression)`, method="spearman")
+
+# Kendall Correlation
+cor.test(FAT1_CSCC$`Copy Number Alterations`, FAT1_CSCC$`log2 (mRNA Expression)`, method="kendall")
+
+FAT1_CSCC$`Copy Number Alterations` = as.factor(FAT1_CSCC$`Copy Number Alterations`)
+summary(FAT1_CSCC[4:5]) %>% knitr::kable()
+
+P5.1 = 
+FAT1_CSCC %>% 
+  ggplot(aes(x = `Copy Number Alterations`, y = `mRNA Expression`))  + geom_boxplot() + theme_bw() + 
+  labs(caption = "FAT1 in Cervical SCC")
+
+P5.2 = 
+FAT1_CSCC %>% 
+  ggplot(aes(x = `Copy Number Alterations`, y = `log2 (mRNA Expression)`))  + geom_boxplot() + theme_bw() + 
+  labs(caption = "FAT1 in Cervical SCC")
+
+# Anova analysis
+analysis5 = aov(FAT1_CSCC$`log2 (mRNA Expression)`~FAT1_CSCC$`Copy Number Alterations`)
+summary.aov(analysis5)
+```
+
+
+```{r}
+EGFR_CSCC = CSCC[c(1, 2, 4, 6)] 
+colnames(EGFR_CSCC) = c("Study ID", "Sample ID", "Copy Number Alterations", "mRNA Expression")  
+EGFR_CSCC$`log2 (mRNA Expression)` = log(EGFR_CSCC$`mRNA Expression`, base = 2)
+# Pearson Correlation
+cor.test(EGFR_CSCC$`Copy Number Alterations`, EGFR_CSCC$`log2 (mRNA Expression)`, method="pearson")
+
+# Spearman Correlation
+cor.test(EGFR_CSCC$`Copy Number Alterations`, EGFR_CSCC$`log2 (mRNA Expression)`, method="spearman")
+
+# Kendall Correlation
+cor.test(EGFR_CSCC$`Copy Number Alterations`, EGFR_CSCC$`log2 (mRNA Expression)`, method="kendall")
+
+EGFR_CSCC$`Copy Number Alterations` = as.factor(EGFR_CSCC$`Copy Number Alterations`)
+summary(EGFR_CSCC[4:5]) %>% knitr::kable()
+
+P6.1 = 
+EGFR_CSCC %>% 
+  ggplot(aes(x = `Copy Number Alterations`, y = `mRNA Expression`))  + geom_boxplot() + theme_bw() + 
+  labs(caption = "EGFR in Cervical SCC")
+
+P6.2 = 
+EGFR_CSCC %>% 
+  ggplot(aes(x = `Copy Number Alterations`, y = `log2 (mRNA Expression)`))  + geom_boxplot() + theme_bw() + 
+  labs(caption = "EGFR in Cervical HNSCC")
+
+# Anova analysis
+analysis6 = aov(EGFR_CSCC$`log2 (mRNA Expression)`~EGFR_CSCC$`Copy Number Alterations`)
+summary.aov(analysis6)
+
+ggarrange(P1.1, P2.1,
+          P3.1, P4.1,
+          P5.1, P6.1,
+          ncol = 2, nrow = 3)
+
+ggarrange(P1.2, P2.2,
+          P3.2, P4.2,
+          P5.2, P6.2,
+          ncol = 2, nrow = 3)
+```
