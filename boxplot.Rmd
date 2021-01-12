@@ -13,6 +13,8 @@ library(sas7bdat)
 
 ## Import data
 ```{r import}
-
+negative = read_sas(data_file = "./trans_mutation_hpv_neg_tcga.sas7bdat")
+mutated = read_sas(data_file = "./trans_tcga_hpv_mutation.sas7bdat")
+wholedata = readxl::read_excel("./TCGA_HPV_mutation_Summary_042720 copy.xlsx")
 ```
 
