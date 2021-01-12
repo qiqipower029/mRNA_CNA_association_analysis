@@ -1,0 +1,18 @@
+---
+title: "boxplotmaking"
+author: "Jieqi Tu"
+date: "1/12/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(haven)
+library(sas7bdat)
+```
+
+
+## Import data
+```{r import}
+
+```
+
