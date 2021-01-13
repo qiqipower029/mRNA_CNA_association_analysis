@@ -3,6 +3,8 @@ title: "boxplotmaking"
 author: "Jieqi Tu"
 date: "1/12/2021"
 output: pdf_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -16,5 +18,41 @@ library(sas7bdat)
 negative = read_sas(data_file = "./trans_mutation_hpv_neg_tcga.sas7bdat")
 mutated = read_sas(data_file = "./trans_tcga_hpv_mutation.sas7bdat")
 wholedata = readxl::read_excel("./TCGA_HPV_mutation_Summary_042720 copy.xlsx")
+rawdata = read_sas(data_file = "./Tojieqi.sas7bdat")
+rawdata$Altered = as.factor(rawdata$Altered)
+rawdata$Genotypes = ifelse(rawdata$Altered == 1, "Altered", "Wild-type")
+```
+
+## Generate boxplot
+```{r boxplot}
+FGF1 = rawdata %>% 
+  ggplot(aes(x = Genotypes, y = COL6387)) + geom_boxplot() + theme_bw() + labs(
+    y = "FGF1 (log-transformed)"
+  )
+
+FGF2 = rawdata %>% 
+  ggplot(aes(x = Genotypes, y = COL6392)) + geom_boxplot() + theme_bw() + labs(
+    y = "FGF2 (log-transformed)"
+  )
+
+IL2 = rawdata %>% 
+  ggplot(aes(x = Genotypes, y = COL8431)) + geom_boxplot() + theme_bw() + labs(
+    y = "IL2 (log-transformed)"
+  )
+
+NRG1 = rawdata %>% 
+  ggplot(aes(x = Genotypes, y = COL12108)) + geom_boxplot() + theme_bw() + labs(
+    y = "NRG1 (log-transformed)"
+  )
+
+TGFB1 = rawdata %>% 
+  ggplot(aes(x = Genotypes, y = COL17935)) + geom_boxplot() + theme_bw() + labs(
+    y = "TGFB1 (log-transformed)"
+  )
+
+library(ggpubr)
+ggarrange(FGF1, FGF2,
+          IL2, NRG1, TGFB1,
+          ncol = 2, nrow = 3)
 ```
 
