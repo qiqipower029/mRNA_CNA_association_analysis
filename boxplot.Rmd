@@ -10,6 +10,7 @@ editor_options:
 ```{r setup, include=FALSE}
 library(haven)
 library(sas7bdat)
+library(tidyverse)
 ```
 
 
@@ -28,27 +29,27 @@ rawdata$Genotypes = ifelse(rawdata$Altered == 1, "Altered", "Wild-type")
 FGF1 = rawdata %>% 
   ggplot(aes(x = Genotypes, y = COL6387)) + geom_boxplot() + theme_bw() + labs(
     y = "FGF1 (log-transformed)"
-  )
+  ) + theme(axis.text = element_text(size = 14))
 
 FGF2 = rawdata %>% 
   ggplot(aes(x = Genotypes, y = COL6392)) + geom_boxplot() + theme_bw() + labs(
     y = "FGF2 (log-transformed)"
-  )
+  ) + theme(axis.text = element_text(size = 14))
 
 IL2 = rawdata %>% 
   ggplot(aes(x = Genotypes, y = COL8431)) + geom_boxplot() + theme_bw() + labs(
     y = "IL2 (log-transformed)"
-  )
+  ) + theme(axis.text = element_text(size = 14))
 
 NRG1 = rawdata %>% 
   ggplot(aes(x = Genotypes, y = COL12108)) + geom_boxplot() + theme_bw() + labs(
     y = "NRG1 (log-transformed)"
-  )
+  ) + theme(axis.text = element_text(size = 14))
 
 TGFB1 = rawdata %>% 
-  ggplot(aes(x = Genotypes, y = COL17935)) + geom_boxplot() + theme_bw() + labs(
+  ggplot(aes(x = Genotypes, y = COL17935)) + geom_boxplot() +theme_bw() + labs(
     y = "TGFB1 (log-transformed)"
-  )
+  ) + theme(axis.text = element_text(size = 14))
 
 library(ggpubr)
 ggarrange(FGF1, FGF2,
